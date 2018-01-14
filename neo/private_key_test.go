@@ -26,7 +26,7 @@ func TestPrivateKey(t *testing.T) {
 
 	t.Run("NewPrivateKey()", func(t *testing.T) {
 		t.Run("HappyCase", func(t *testing.T) {
-			privateKey, err := neo.NewPrivateKey(account.wif)
+			privateKey, err := neo.NewPrivateKey()
 			assert.IsType(t, &neo.PrivateKey{}, privateKey)
 			assert.NoError(t, err)
 		})
@@ -37,7 +37,7 @@ func TestPrivateKey(t *testing.T) {
 			b := make([]byte, 32)
 			rand.Read(b)
 			wif, err := neo.NewWIFFromPrivateKey(b)
-			assert.IsType(t, string, wif)
+			assert.IsType(t, string, *wif)
 			assert.NoError(t, err)
 		})
 	})
