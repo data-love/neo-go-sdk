@@ -1,6 +1,7 @@
 package neo_test
 
 import (
+	"crypto/rand"
 	"encoding/hex"
 	"fmt"
 	"testing"
@@ -20,6 +21,24 @@ func TestPrivateKey(t *testing.T) {
 					assert.NoError(t, err)
 				})
 			}
+		})
+	})
+
+	t.Run("NewPrivateKey()", func(t *testing.T) {
+		t.Run("HappyCase", func(t *testing.T) {
+			privateKey, err := neo.NewPrivateKey(account.wif)
+			assert.IsType(t, &neo.PrivateKey{}, privateKey)
+			assert.NoError(t, err)
+		})
+	})
+
+	t.Run("NewWIFFromPrivateKey()", func(t *testing.T) {
+		t.Run("HappyCase", func(t *testing.T) {
+			b := make([]byte, 32)
+			rand.Read(b)
+			wif, err := neo.NewWIFFromPrivateKey(b)
+			assert.IsType(t, string, wif)
+			assert.NoError(t, err)
 		})
 	})
 
