@@ -24,37 +24,39 @@ type (
 
 // NewPrivateKey creates a new random PrivateKey
 func NewPrivateKey() (*PrivateKey, error) {
-	b := make([]byte, 32)
-	_, err := rand.Read(b)
+
+	bytes := make([]byte, 32)
+	_, err := rand.Read(bytes)
 	if err != nil {
 		return nil, err
 	}
-	return &PrivateKey{bytes: b}, nil
+
+	return &PrivateKey{bytes: bytes}, nil
 }
 
-// NewWIFFromPrivateKey creates a WIF based on the private key
-func (p PrivateKey) NewWIFFromPrivateKey() (*string, error) {
+// WIF creates a WIF based on the private key
+func (p PrivateKey) WIF() (string, error) {
+
 	if len(p.bytes) != 32 {
-		return nil, fmt.Errorf(
+		return "", fmt.Errorf(
 			"Expected length of private key to be 32, got: %d", len(p.bytes),
 		)
 	}
-	// prepend and extend private key
+
 	var pre uint8 = 0x80
 	var ext uint8 = 0x01
+
 	bytes := append([]byte{pre}, p.bytes...)
 	bytes = append(bytes, ext)
 
-	// build Checksum
 	firstSHA := sha256.Sum256(bytes)
 	secondSHA := sha256.Sum256(firstSHA[:])
 
-	// extend the extended private key with part of checksum
 	wif := append(bytes, secondSHA[:4]...)
 
 	base58 := utility.NewBase58()
 	encodedWIF := base58.Encode(wif)
-	return &encodedWIF, nil
+	return encodedWIF, nil
 }
 
 // NewPrivateKeyFromWIF creates a PrivateKey struct using a WIF.
