@@ -7,6 +7,7 @@ import (
 
 	"github.com/CityOfZion/neo-go-sdk/neo/models"
 	"github.com/CityOfZion/neo-go-sdk/neo/models/response"
+	"github.com/data-love/neo-go-sdk/utility"
 )
 
 type (
@@ -120,7 +121,7 @@ func (c Client) GetStorage(scriptHash string, storageKey string) (string, error)
 		return "", err
 	}
 
-	return response.Result, nil
+	return utility.Reverse(response.Result), nil
 }
 
 // GetTransaction returns the corresponding transaction information based on the
